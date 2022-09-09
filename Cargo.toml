@@ -1,0 +1,26 @@
+[package]
+edition = "2021"
+name = "swc_css"
+version = "0.0.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
+napi = { version = "2.7.0", default-features = false, features = ["napi4"] }
+napi-derive = "2.7.0"
+swc_css = { version = "0.123.3", features = ["minifier"] }
+swc_common = "0.27.16"
+
+[target.'cfg(not(target_os = "linux"))'.dependencies]
+mimalloc-rust = { version = "0.2" }
+
+[target.'cfg(all(target_os = "linux", not(all(target_env = "musl", target_arch = "aarch64"))))'.dependencies]
+mimalloc-rust = { version = "0.2", features = ["local-dynamic-tls"] }
+
+[build-dependencies]
+napi-build = "2.0.1"
+
+[profile.release]
+lto = true
